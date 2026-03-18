@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workbench Survey Editor — Keyboard Shortcuts Prototype</title>
+  <style>
+    :root {
+      --color-text-accent: #055cb2;
+      --color-text-medium: rgba(10, 24, 38, 0.71);
+      --color-text-low: rgba(10, 24, 38, 0.45);
+      --color-text-disabled: rgba(10, 24, 38, 0.30);
+      --color-object-high: #162331;
+      --color-border-accent: #055cb2;
+      --color-border-low: rgba(10, 24, 38, 0.08);
+      --color-border-medium: rgba(10, 24, 38, 0.16);
+      --color-surface-primary: #0067cf;
+      --color-surface-component-bg: #ffffff;
+      --color-background-layer-1: #f5f6f8;
+      --color-error: #c4280a;
+      --color-success: #0d7c3d;
+      --color-warning: #9c6800;
+      --color-staff-header-bg: #1b2a3d;
+      --font-family-ja: "Hiragino Sans", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic ProN", sans-serif;
+      --font-family-en: "Roboto", sans-serif;
+      --font-family-base: var(--font-family-ja);
+      --font-weight-light: 300;
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-size-xs: 11px;
+      --font-size-sm: 12px;
+      --font-size-body: 14px;
+      --font-size-head-xs: 16px;
+      --line-height-tight: 1;
+      --line-height-normal: 1.5;
+      --spacing-1: 2px; --spacing-2: 4px; --spacing-3: 6px; --spacing-4: 8px;
+      --spacing-5: 10px; --spacing-6: 12px; --spacing-8: 16px; --spacing-10: 20px;
+      --spacing-12: 24px; --spacing-16: 32px; --spacing-20: 40px; --spacing-24: 48px;
+      --radius-s: 4px; --radius-m: 8px; --radius-l: 12px; --radius-full: 9999px;
+      --elevation-1: 0 1px 2px rgba(10, 24, 38, 0.06);
+      --elevation-2: 0 2px 8px rgba(10, 24, 38, 0.10);
+      --elevation-3: 0 4px 16px rgba(10, 24, 38, 0.14);
+      --elevation-toast: 0 8px 24px rgba(10, 24, 38, 0.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-body);
+      font-weight: var(--font-weight-light);
+      line-height: var(--line-height-normal);
+      color: var(--color-object-high);
+      background: var(--color-background-layer-1);
+      overflow: hidden; height: 100vh;
+    }
+    button { font-family: var(--font-family-base); }
+
+    /* Global Header */
+    .gh { display:flex; align-items:center; height:48px; padding:0 var(--spacing-8); background:var(--color-surface-component-bg); border-bottom:1px solid var(--color-border-low); }
+    .gh-ham { width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; color:var(--color-object-high); border-radius:var(--radius-s); margin-right:var(--spacing-4); }
+    .gh-ham:hover { background:rgba(10,24,38,0.04); }
+    .gh-brand { display:flex; align-items:center; gap:var(--spacing-3); }
+    .gh-brand svg { width:24px; height:24px; color:var(--color-surface-primary); }
+    .gh-brand span { font-size:var(--font-size-head-xs); font-weight:var(--font-weight-semibold); color:var(--color-surface-primary); font-family:var(--font-family-en); }
+    .gh-r { margin-left:auto; display:flex; align-items:center; gap:var(--spacing-6); }
+    .gh-ib { width:32px; height:32px; border-radius:var(--radius-s); display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:none; color:var(--color-text-medium); }
+    .gh-ib:hover { background:rgba(10,24,38,0.04); color:var(--color-object-high); }
+    .gh-ib svg { width:18px; height:18px; }
+    .gh-acc { font-size:var(--font-size-body); color:var(--color-text-medium); display:flex; align-items:center; gap:var(--spacing-2); }
+    .gh-acc svg { width:16px; height:16px; }
+
+    /* Sub Header */
+    .sh { display:flex; align-items:center; min-height:56px; padding:var(--spacing-4) var(--spacing-8); background:var(--color-surface-component-bg); border-bottom:1px solid var(--color-border-low); gap:var(--spacing-4); }
+    .sh-back { width:32px; height:32px; border-radius:var(--radius-s); display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:none; color:var(--color-object-high); flex-shrink:0; }
+    .sh-back:hover { background:rgba(10,24,38,0.04); }
+    .sh-back svg { width:18px; height:18px; }
+    .sh-info { display:flex; flex-direction:column; gap:1px; }
+    .sh-title { font-size:var(--font-size-head-xs); font-weight:var(--font-weight-semibold); line-height:var(--line-height-tight); }
+    .sh-meta { display:flex; align-items:center; gap:var(--spacing-3); font-size:var(--font-size-sm); color:var(--color-text-medium); }
+    .sh-chk { color:var(--color-surface-primary); font-size:13px; }
+    .sh-acts { margin-left:auto; display:flex; align-items:center; gap:var(--spacing-4); flex-shrink:0; }
+
+    /* Buttons */
+    .ab { display:inline-flex; align-items:center; justify-content:center; height:36px; padding:0 var(--spacing-8); border-radius:var(--radius-s); font-family:var(--font-family-base); font-size:var(--font-size-body); font-weight:var(--font-weight-regular); cursor:pointer; text-decoration:none; transition:all .12s ease; position:relative; gap:var(--spacing-2); }
+    .ab:focus-visible { outline:2px solid var(--color-border-accent); outline-offset:2px; }
+    .ab--gh { background:none; border:none; color:var(--color-object-high); }
+    .ab--gh:hover { background:rgba(10,24,38,0.04); }
+    .ab--ob { background:var(--color-surface-component-bg); border:1px solid var(--color-border-accent); color:var(--color-text-accent); font-weight:var(--font-weight-medium); }
+    .ab--ob:hover { background:rgba(5,92,178,0.06); }
+    .ab--ol { background:var(--color-surface-component-bg); border:1px solid var(--color-border-medium); color:var(--color-object-high); }
+    .ab--ol:hover { background:rgba(10,24,38,0.03); border-color:rgba(10,24,38,0.28); }
+    .ab--dk { background:var(--color-staff-header-bg); border:1px solid var(--color-staff-header-bg); color:#fff; font-weight:var(--font-weight-medium); }
+    .ab--dk:hover { background:#243750; }
+    .ab svg { width:16px; height:16px; flex-shrink:0; }
+
+    /* Tabs */
+    .tb { display:flex; align-items:flex-end; height:40px; padding:0 var(--spacing-8); background:var(--color-surface-component-bg); border-bottom:1px solid var(--color-border-low); gap:var(--spacing-10); }
+    .ti { display:flex; align-items:center; justify-content:center; height:40px; padding:0 var(--spacing-1); font-size:var(--font-size-body); font-weight:var(--font-weight-light); color:var(--color-text-medium); cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; transition:all .12s ease; }
+    .ti:hover { color:var(--color-object-high); }
+    .ti.on { color:var(--color-text-accent); font-weight:var(--font-weight-semibold); border-bottom-color:var(--color-text-accent); }
+
+    /* Main Layout */
+    .ml { display:flex; height:calc(100vh - 48px - 56px - 40px - 44px); transition:height .25s ease; }
+    .ml.no-banner { height:calc(100vh - 48px - 56px - 40px); }
+
+    /* Icon Sidebar */
+    .is { width:48px; flex-shrink:0; background:var(--color-surface-component-bg); border-right:1px solid var(--color-border-low); display:flex; flex-direction:column; align-items:center; padding-top:var(--spacing-6); gap:var(--spacing-1); }
+    .si { width:44px; height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:none; color:var(--color-text-medium); border-left:3px solid transparent; border-radius:0; }
+    .si:hover { color:var(--color-object-high); background:rgba(10,24,38,0.03); }
+    .si.on { color:var(--color-text-accent); border-left-color:var(--color-text-accent); }
+    .si svg { width:20px; height:20px; }
+
+    /* Left Panel */
+    .lp { width:280px; flex-shrink:0; background:var(--color-surface-component-bg); border-right:1px solid var(--color-border-low); display:flex; flex-direction:column; }
+    .lp-e { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--color-text-low); font-size:var(--font-size-sm); gap:var(--spacing-4); padding:var(--spacing-12); }
+    .lp-e svg { width:48px; height:48px; color:var(--color-text-disabled); }
+
+    /* Editor */
+    .ea { flex:1; overflow-y:auto; background:var(--color-background-layer-1); position:relative; padding:var(--spacing-4) var(--spacing-12) 80px; }
+    .et { position:sticky; top:0; display:flex; justify-content:flex-end; gap:var(--spacing-1); padding-bottom:var(--spacing-4); z-index:10; }
+    .ei { width:36px; height:36px; border-radius:var(--radius-s); display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:none; color:var(--color-text-medium); position:relative; }
+    .ei:hover { background:rgba(10,24,38,0.04); color:var(--color-object-high); }
+    .ei svg { width:20px; height:20px; }
+
+    /* Question Card */
+    .qc { background:var(--color-surface-component-bg); border:1px solid var(--color-border-low); border-radius:var(--radius-m); padding:var(--spacing-10) var(--spacing-12); margin-bottom:var(--spacing-4); max-width:960px; margin-left:auto; margin-right:auto; transition:border-color .12s ease, box-shadow .12s ease, transform .25s ease, opacity .25s ease; cursor:pointer; }
+    .qc:hover { border-color:var(--color-border-medium); }
+    .qc.sel { border-color:var(--color-border-accent); box-shadow:0 0 0 1px var(--color-border-accent); }
+    .qc.move-up { animation:moveUp .3s ease; }
+    .qc.move-down { animation:moveDown .3s ease; }
+    @keyframes moveUp { 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} }
+    @keyframes moveDown { 0%{transform:translateY(0)} 50%{transform:translateY(8px)} 100%{transform:translateY(0)} }
+    .qh { display:flex; align-items:baseline; gap:var(--spacing-4); margin-bottom:var(--spacing-6); }
+    .qn { font-weight:var(--font-weight-semibold); font-size:var(--font-size-head-xs); }
+    .qr { color:var(--color-error); font-size:var(--font-size-sm); font-weight:var(--font-weight-semibold); }
+    .qt { display:inline-flex; align-items:center; gap:var(--spacing-2); padding:var(--spacing-2) var(--spacing-5); border:1px solid var(--color-border-low); border-radius:var(--radius-s); font-size:var(--font-size-sm); color:var(--color-text-medium); margin-bottom:var(--spacing-6); background:var(--color-surface-component-bg); cursor:pointer; }
+    .qt svg { width:14px; height:14px; }
+    .qt .ca { opacity:0.4; font-size:10px; margin-left:2px; }
+    .qx { margin-bottom:var(--spacing-8); font-weight:var(--font-weight-light); }
+    .qx b, .qx strong, .qo-txt b, .qo-txt strong { font-weight:800; color:var(--color-object-high); }
+    .qx i, .qx em, .qo-txt i, .qo-txt em { font-style:italic; }
+    .qx u, .qo-txt u { text-decoration:underline; text-decoration-color:var(--color-text-accent); text-underline-offset:2px; }
+    .qx[contenteditable]:focus { outline:none; background:rgba(5,92,178,0.04); border-radius:var(--radius-s); padding:var(--spacing-2) var(--spacing-3); margin-left:calc(-1 * var(--spacing-3)); margin-right:calc(-1 * var(--spacing-3)); }
+    .qo { display:flex; align-items:center; gap:var(--spacing-4); padding:var(--spacing-4) 0; font-weight:var(--font-weight-light); }
+    .qo-txt { flex:1; outline:none; }
+    .qo-txt:focus { background:rgba(5,92,178,0.04); border-radius:var(--radius-s); padding:var(--spacing-1) var(--spacing-3); margin:calc(-1 * var(--spacing-1)) calc(-1 * var(--spacing-3)); }
+    .qrd { width:18px; height:18px; border-radius:50%; border:2px solid var(--color-border-medium); flex-shrink:0; }
+    .qcn { color:var(--color-text-low); font-size:var(--font-size-sm); min-width:14px; text-align:right; }
+
+    /* Page break */
+    .pb { display:flex; align-items:center; max-width:960px; margin:var(--spacing-3) auto; gap:var(--spacing-4); }
+    .pb-l { color:var(--color-text-low); font-size:var(--font-size-sm); white-space:nowrap; }
+    .pb-ln { flex:1; height:1px; background:var(--color-border-low); }
+    .pb-x { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:1px solid var(--color-border-low); color:var(--color-text-low); }
+    .pb-x:hover { background:rgba(10,24,38,0.04); color:var(--color-object-high); border-color:var(--color-border-medium); }
+    .pb-x svg { width:14px; height:14px; }
+
+    /* Tooltip */
+    .ht { position:relative; }
+    .tp { position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%); padding:var(--spacing-3) var(--spacing-5); background:var(--color-object-high); color:#fff; font-size:var(--font-size-xs); font-weight:var(--font-weight-regular); border-radius:var(--radius-s); white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .15s ease; z-index:200; display:flex; align-items:center; gap:var(--spacing-3); }
+    .tp::after { content:''; position:absolute; bottom:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-bottom-color:var(--color-object-high); }
+    .ht:hover .tp, .ht:focus-visible .tp { opacity:1; }
+    .tp-l { opacity:0.75; margin-right:var(--spacing-1); }
+    kbd { display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:16px; padding:0 var(--spacing-2); background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.22); border-radius:3px; font-family:var(--font-family-en); font-size:10px; font-weight:var(--font-weight-medium); line-height:1; }
+    .tp--r { left:auto; right:0; transform:none; }
+    .tp--r::after { left:auto; right:12px; transform:none; }
+
+    /* Toast — MMDS compliant */
+    .tc { position:fixed; bottom:var(--spacing-16); left:var(--spacing-12); display:flex; flex-direction:column-reverse; gap:var(--spacing-3); z-index:9999; pointer-events:none; }
+    .tt { display:flex; align-items:center; gap:var(--spacing-4); padding:var(--spacing-5) var(--spacing-8); border-radius:var(--radius-m); box-shadow:var(--elevation-toast); font-size:var(--font-size-body); font-weight:var(--font-weight-medium); min-width:260px; max-width:520px; pointer-events:auto; animation:ti .25s cubic-bezier(.16,1,.3,1) forwards; }
+    .tt.ex { animation:to .2s ease forwards; }
+    /* Success (green) */
+    .tt--ok { background:#0d7c3d; color:#fff; }
+    /* Info (blue) */
+    .tt--info { background:var(--color-surface-primary); color:#fff; }
+    /* Warning (amber) */
+    .tt--warn { background:#9c6800; color:#fff; }
+    .tt-i { width:18px; height:18px; flex-shrink:0; }
+    .tt-m { flex:1; }
+    .tt-k { display:flex; align-items:center; gap:2px; opacity:.6; }
+    .tt-k kbd { background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.25); border-radius:3px; font-family:var(--font-family-en); font-size:9px; height:15px; min-width:15px; display:inline-flex; align-items:center; justify-content:center; padding:0 3px; font-weight:var(--font-weight-medium); line-height:1; color:#fff; }
+    .tt-x { width:24px; height:24px; border-radius:var(--radius-s); display:flex; align-items:center; justify-content:center; background:none; border:none; color:rgba(255,255,255,.7); cursor:pointer; flex-shrink:0; margin-left:var(--spacing-2); }
+    .tt-x:hover { color:#fff; background:rgba(255,255,255,.15); }
+    .tt-x svg { width:14px; height:14px; }
+    @keyframes ti { from{opacity:0;transform:translateY(10px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes to { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(10px) scale(.97)} }
+
+    /* Modal */
+    .ov { position:fixed; inset:0; background:rgba(10,24,38,.4); display:none; align-items:center; justify-content:center; z-index:10000; }
+    .ov.op { display:flex; }
+    .md { background:var(--color-surface-component-bg); border-radius:var(--radius-l); box-shadow:var(--elevation-3); width:600px; max-height:75vh; display:flex; flex-direction:column; animation:mi .2s ease; }
+    @keyframes mi { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+    .md-h { display:flex; align-items:center; justify-content:space-between; padding:var(--spacing-8) var(--spacing-10); border-bottom:1px solid var(--color-border-low); }
+    .md-t { font-size:var(--font-size-head-xs); font-weight:var(--font-weight-semibold); }
+    .md-x { width:30px; height:30px; border-radius:var(--radius-s); display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:none; color:var(--color-text-medium); }
+    .md-x:hover { background:rgba(10,24,38,.04); }
+    .md-b { padding:var(--spacing-6) var(--spacing-10); overflow-y:auto; flex:1; }
+    .ss { margin-bottom:var(--spacing-8); }
+    .st { font-size:var(--font-size-xs); font-weight:var(--font-weight-semibold); color:var(--color-text-medium); text-transform:uppercase; letter-spacing:.6px; margin-bottom:var(--spacing-3); padding-bottom:var(--spacing-2); border-bottom:1px solid var(--color-border-low); }
+    .sr { display:flex; align-items:center; justify-content:space-between; padding:var(--spacing-2) 0; font-size:var(--font-size-body); font-weight:var(--font-weight-light); }
+    .sk { display:flex; align-items:center; gap:3px; }
+    .sk kbd { background:var(--color-background-layer-1); border:1px solid var(--color-border-low); color:var(--color-object-high); font-family:var(--font-family-en); font-size:var(--font-size-xs); font-weight:var(--font-weight-medium); min-width:22px; height:22px; padding:0 var(--spacing-3); display:inline-flex; align-items:center; justify-content:center; box-shadow:0 1px 0 rgba(10,24,38,.06); border-radius:3px; }
+    .md-f { padding:var(--spacing-4) var(--spacing-10); border-top:1px solid var(--color-border-low); font-size:var(--font-size-sm); color:var(--color-text-low); text-align:center; }
+
+    /* Comment Panel */
+    .cp { position:fixed; top:0; right:-360px; width:360px; height:100%; background:var(--color-surface-component-bg); border-left:1px solid var(--color-border-low); box-shadow:var(--elevation-3); z-index:500; transition:right .25s ease; display:flex; flex-direction:column; }
+    .cp.open { right:0; }
+    .cp-h { display:flex; align-items:center; justify-content:space-between; padding:var(--spacing-8) var(--spacing-10); border-bottom:1px solid var(--color-border-low); }
+    .cp-h span { font-size:var(--font-size-head-xs); font-weight:var(--font-weight-semibold); }
+    .cp-b { flex:1; overflow-y:auto; padding:var(--spacing-10); }
+    .cp-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-low); font-size:var(--font-size-sm); gap:var(--spacing-4); }
+    .cp-empty svg { width:40px; height:40px; opacity:.3; }
+    .cp-input { padding:var(--spacing-6) var(--spacing-10); border-top:1px solid var(--color-border-low); }
+    .cp-input textarea { width:100%; min-height:60px; padding:var(--spacing-4) var(--spacing-6); border:1px solid var(--color-border-low); border-radius:var(--radius-m); font-family:var(--font-family-base); font-size:var(--font-size-body); resize:none; outline:none; }
+    .cp-input textarea:focus { border-color:var(--color-border-accent); box-shadow:0 0 0 2px rgba(5,92,178,0.2); }
+
+    /* Keyboard shortcut button */
+    .kb-btn { display:flex; align-items:center; gap:var(--spacing-2); padding:var(--spacing-2) var(--spacing-4); border-radius:var(--radius-s); background:none; border:1px solid var(--color-border-low); color:var(--color-text-medium); font-family:var(--font-family-base); font-size:var(--font-size-sm); cursor:pointer; transition:all .12s ease; }
+    .kb-btn:hover { background:rgba(10,24,38,0.04); border-color:var(--color-border-medium); color:var(--color-object-high); }
+    .kb-btn svg { width:14px; height:14px; }
+    .kb-btn kbd { background:var(--color-background-layer-1); border:1px solid var(--color-border-low); color:var(--color-text-medium); font-family:var(--font-family-en); font-size:9px; min-width:16px; height:14px; padding:0 3px; display:inline-flex; align-items:center; justify-content:center; border-radius:2px; }
+
+    /* Onboarding Banner */
+    .ob-banner {
+      display:flex; align-items:center; gap:var(--spacing-6);
+      padding:var(--spacing-4) var(--spacing-8);
+      background:rgba(0,103,207,0.06);
+      border-bottom:1px solid rgba(0,103,207,0.12);
+      animation:obIn .4s ease;
+    }
+    .ob-banner.hidden { display:none; }
+    .ob-banner-icon { width:18px; height:18px; color:var(--color-surface-primary); flex-shrink:0; }
+    .ob-banner-text { flex:1; font-size:var(--font-size-body); color:var(--color-object-high); font-weight:var(--font-weight-light); }
+    .ob-banner-text strong { font-weight:var(--font-weight-semibold); }
+    .ob-banner-text kbd { background:var(--color-surface-component-bg); border:1px solid var(--color-border-low); color:var(--color-object-high); font-family:var(--font-family-en); font-size:var(--font-size-xs); font-weight:var(--font-weight-medium); min-width:20px; height:18px; padding:0 var(--spacing-2); display:inline-flex; align-items:center; justify-content:center; border-radius:3px; box-shadow:0 1px 0 rgba(10,24,38,0.06); }
+    .ob-banner-link { color:var(--color-text-accent); font-weight:var(--font-weight-medium); font-size:var(--font-size-body); cursor:pointer; background:none; border:none; font-family:var(--font-family-base); text-decoration:underline; text-underline-offset:2px; white-space:nowrap; }
+    .ob-banner-link:hover { color:var(--color-surface-primary); }
+    .ob-banner-close { width:28px; height:28px; border-radius:var(--radius-s); display:flex; align-items:center; justify-content:center; cursor:pointer; background:none; border:none; color:var(--color-text-low); flex-shrink:0; }
+    .ob-banner-close:hover { background:rgba(10,24,38,0.06); color:var(--color-object-high); }
+    .ob-banner-close svg { width:14px; height:14px; }
+    @keyframes obIn { from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)} }
+
+    /* Tooltip Tour */
+    .tour-overlay { position:fixed; inset:0; background:rgba(10,24,38,0.35); z-index:8000; display:none; }
+    .tour-overlay.active { display:block; }
+    .tour-callout {
+      position:fixed; z-index:8001;
+      background:var(--color-surface-component-bg);
+      border-radius:var(--radius-m);
+      box-shadow:var(--elevation-3);
+      padding:var(--spacing-8) var(--spacing-10);
+      max-width:300px;
+      animation:tourIn .3s cubic-bezier(.16,1,.3,1);
+      display:none;
+    }
+    .tour-callout.active { display:block; }
+    @keyframes tourIn { from{opacity:0;transform:translateY(8px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .tour-callout::before {
+      content:''; position:absolute;
+      border:8px solid transparent;
+    }
+    .tour-callout.arrow-top::before { bottom:100%; left:24px; border-bottom-color:var(--color-surface-component-bg); }
+    .tour-callout.arrow-bottom::before { top:100%; left:24px; border-top-color:var(--color-surface-component-bg); }
+    .tour-callout.arrow-right-top::before { bottom:100%; right:24px; left:auto; border-bottom-color:var(--color-surface-component-bg); }
+    .tour-label {
+      font-size:var(--font-size-xs);
+      font-weight:var(--font-weight-semibold);
+      color:var(--color-surface-primary);
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      margin-bottom:var(--spacing-3);
+      display:flex; align-items:center; gap:var(--spacing-2);
+    }
+    .tour-label svg { width:14px; height:14px; }
+    .tour-title {
+      font-size:var(--font-size-body);
+      font-weight:var(--font-weight-semibold);
+      margin-bottom:var(--spacing-2);
+    }
+    .tour-desc {
+      font-size:var(--font-size-body);
+      font-weight:var(--font-weight-light);
+      color:var(--color-text-medium);
+      margin-bottom:var(--spacing-6);
+      line-height:var(--line-height-normal);
+    }
+    .tour-desc kbd { background:var(--color-background-layer-1); border:1px solid var(--color-border-low); color:var(--color-object-high); font-family:var(--font-family-en); font-size:var(--font-size-xs); font-weight:var(--font-weight-medium); min-width:20px; height:18px; padding:0 var(--spacing-2); display:inline-flex; align-items:center; justify-content:center; border-radius:3px; box-shadow:0 1px 0 rgba(10,24,38,0.06); }
+    .tour-footer {
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .tour-dots { display:flex; gap:var(--spacing-2); }
+    .tour-dot { width:6px; height:6px; border-radius:50%; background:var(--color-border-medium); }
+    .tour-dot.on { background:var(--color-surface-primary); }
+    .tour-btns { display:flex; gap:var(--spacing-3); }
+    .tour-skip { background:none; border:none; color:var(--color-text-medium); font-size:var(--font-size-sm); cursor:pointer; font-family:var(--font-family-base); padding:var(--spacing-2) var(--spacing-4); border-radius:var(--radius-s); }
+    .tour-skip:hover { color:var(--color-object-high); background:rgba(10,24,38,0.04); }
+    .tour-next { background:var(--color-surface-primary); color:#fff; border:none; font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); cursor:pointer; font-family:var(--font-family-base); padding:var(--spacing-2) var(--spacing-8); border-radius:var(--radius-s); min-height:32px; }
+    .tour-next:hover { background:var(--color-text-accent); }
+
+    /* Highlight ring for tour targets */
+    .tour-highlight { position:relative; z-index:8002; }
+  </style>
+</head>
+<body>
+
+  <!-- Global Header -->
+  <header class="gh">
+    <button class="gh-ham" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="gh-brand"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="8.5" height="8.5" rx="1.5"/><rect x="13.5" y="2" width="8.5" height="8.5" rx="1.5"/><rect x="2" y="13.5" width="8.5" height="8.5" rx="1.5"/><rect x="13.5" y="13.5" width="8.5" height="8.5" rx="1.5"/></svg><span>Workbench</span></div>
+    <div class="gh-r">
+      <button class="gh-ib" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+      <button class="gh-ib" aria-label="Apps"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="19" cy="5" r="1.8"/><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/><circle cx="5" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/><circle cx="19" cy="19" r="1.8"/></svg></button>
+      <span class="gh-acc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>account name</span>
+    </div>
+  </header>
+
+  <!-- Sub Header -->
+  <div class="sh">
+    <button class="sh-back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg></button>
+    <div class="sh-info">
+      <div class="sh-title">New survey</div>
+      <div class="sh-meta"><span class="sh-chk">✓</span><span>Survey ID: su:1DDSRWJR</span><span style="opacity:.4">|</span><span>Criteria: QuickMill</span></div>
+    </div>
+    <div class="sh-acts">
+      <button class="ab ab--gh ht" id="btn-preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview<span class="tp"><span class="tp-l">Preview</span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>V</kbd></span></button>
+      <button class="ab ab--ob ht" id="btn-logic">Check logic<span class="tp"><span class="tp-l">Check logic</span><kbd>⌥</kbd><kbd>L</kbd></span></button>
+      <button class="ab ab--ol ht" id="btn-save">Save<span class="tp"><span class="tp-l">Save</span><kbd>⌘</kbd><kbd>S</kbd></span></button>
+      <button class="ab ab--ol">Save to AIRs</button>
+      <button class="ab ab--dk ht" id="btn-pub">Publish<span class="tp"><span class="tp-l">Publish</span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>P</kbd></span></button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tb"><button class="ti">Overview</button><button class="ti on">Questionnaire</button><button class="ti">Analysis</button></div>
+
+  <!-- Onboarding Banner -->
+  <div class="ob-banner" id="ob-banner">
+    <svg class="ob-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8.01"/><line x1="10" y1="8" x2="10" y2="8.01"/><line x1="14" y1="8" x2="14" y2="8.01"/><line x1="18" y1="8" x2="18" y2="8.01"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><line x1="14" y1="12" x2="14" y2="12.01"/><line x1="18" y1="12" x2="18" y2="12.01"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+    <span class="ob-banner-text"><strong>Keyboard shortcuts are now available.</strong> Press <kbd>⌘</kbd><kbd>/</kbd> to view all shortcuts, or <button class="ob-banner-link" id="ob-start-tour">take a quick tour</button></span>
+    <button class="ob-banner-close" id="ob-dismiss" aria-label="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="ml">
+    <nav class="is">
+      <button class="si on" aria-label="Edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="si" aria-label="Respondents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></button>
+      <button class="si" aria-label="Flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M21 3l-7 7"/><path d="M8 21H3v-5"/><path d="M3 21l7-7"/></svg></button>
+      <button class="si" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </nav>
+    <aside class="lp"><div class="lp-e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg><span>Please choose or add a question.</span></div></aside>
+    <main class="ea" id="ea">
+      <div class="et">
+        <button class="ei ht" id="btn-comments" aria-label="Comments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span class="tp tp--r"><span class="tp-l">Comments</span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>J</kbd></span></button>
+        <button class="ei ht" aria-label="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="tp tp--r"><span class="tp-l">History</span></span></button>
+        <button class="ei ht" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="tp tp--r"><span class="tp-l">Search</span><kbd>⌘</kbd><kbd>⇧</kbd><kbd>H</kbd></span></button>
+        <button class="ei ht" id="btn-shortcuts" aria-label="Keyboard shortcuts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8.01"/><line x1="10" y1="8" x2="10" y2="8.01"/><line x1="14" y1="8" x2="14" y2="8.01"/><line x1="18" y1="8" x2="18" y2="8.01"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><line x1="14" y1="12" x2="14" y2="12.01"/><line x1="18" y1="12" x2="18" y2="12.01"/><line x1="8" y1="16" x2="16" y2="16"/></svg><span class="tp tp--r"><span class="tp-l">Shortcuts</span><kbd>⌘</kbd><kbd>/</kbd></span></button>
+      </div>
+      <div id="q-container"></div>
+      <div style="height:80px"></div>
+    </main>
+  </div>
+
+  <!-- Comment Panel -->
+  <div class="cp" id="comment-panel">
+    <div class="cp-h">
+      <span>Comments</span>
+      <button class="md-x" id="cp-close" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="cp-b">
+      <div class="cp-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span>No comments yet</span>
+        <span style="font-size:11px;opacity:.7">Select a question and press ⌥⇧M to add a comment</span>
+      </div>
+    </div>
+    <div class="cp-input">
+      <textarea placeholder="Add a comment…"></textarea>
+    </div>
+  </div>
+
+  <!-- Tour Overlay -->
+  <div class="tour-overlay" id="tour-overlay"></div>
+
+  <!-- Tour Callout (positioned dynamically by JS) -->
+  <div class="tour-callout" id="tour-callout">
+    <div class="tour-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 12 18.469V19a3.374 3.374 0 0 0-.935-1.32l-.548-.548z"/></svg>
+      <span>Did you know?</span>
+      <span id="tour-step-label" style="margin-left:auto;opacity:.5;font-size:10px"></span>
+    </div>
+    <div class="tour-title" id="tour-title"></div>
+    <div class="tour-desc" id="tour-desc"></div>
+    <div class="tour-footer">
+      <div class="tour-dots" id="tour-dots"></div>
+      <div class="tour-btns">
+        <button class="tour-skip" id="tour-skip">Skip</button>
+        <button class="tour-next" id="tour-next">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tc" id="tc"></div>
+
+  <!-- Shortcuts Modal -->
+  <div class="ov" id="ov">
+    <div class="md" role="dialog" aria-labelledby="mt">
+      <div class="md-h"><span class="md-t" id="mt">Keyboard Shortcuts</span><button class="md-x" id="mx" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+      <div class="md-b">
+        <div class="ss"><div class="st">Survey Management</div>
+          <div class="sr"><span>Save survey</span><span class="sk"><kbd>⌘</kbd><kbd>S</kbd></span></div>
+          <div class="sr"><span>Preview survey</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>V</kbd></span></div>
+          <div class="sr"><span>Rename survey</span><span class="sk"><kbd>F2</kbd></span></div>
+          <div class="sr"><span>Undo</span><span class="sk"><kbd>⌘</kbd><kbd>Z</kbd></span></div>
+          <div class="sr"><span>Redo</span><span class="sk"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>Z</kbd></span></div>
+          <div class="sr"><span>Create new blank survey</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>N</kbd></span></div>
+          <div class="sr"><span>Publish survey</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>P</kbd></span></div>
+          <div class="sr"><span>Duplicate survey</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>D</kbd></span></div>
+        </div>
+        <div class="ss"><div class="st">Question Management</div>
+          <div class="sr"><span>Add new question</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>Q</kbd></span></div>
+          <div class="sr"><span>Duplicate question</span><span class="sk"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>D</kbd></span></div>
+          <div class="sr"><span>Delete question</span><span class="sk"><kbd>⌫</kbd></span></div>
+          <div class="sr"><span>Move question up</span><span class="sk"><kbd>⌥</kbd><kbd>↑</kbd></span></div>
+          <div class="sr"><span>Move question down</span><span class="sk"><kbd>⌥</kbd><kbd>↓</kbd></span></div>
+          <div class="sr"><span>Expand question</span><span class="sk"><kbd>⌥</kbd><kbd>E</kbd></span></div>
+          <div class="sr"><span>Collapse question</span><span class="sk"><kbd>⌥</kbd><kbd>C</kbd></span></div>
+          <div class="sr"><span>Expand all</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>E</kbd></span></div>
+          <div class="sr"><span>Collapse all</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>C</kbd></span></div>
+          <div class="sr"><span>Add comment</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>M</kbd></span></div>
+        </div>
+        <div class="ss"><div class="st">Choice / Sub-question</div>
+          <div class="sr"><span>Add new choice</span><span class="sk"><kbd>↩</kbd></span></div>
+          <div class="sr"><span>Delete choice</span><span class="sk"><kbd>⌫</kbd></span></div>
+          <div class="sr"><span>Move choice up</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>↑</kbd></span></div>
+          <div class="sr"><span>Move choice down</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>↓</kbd></span></div>
+          <div class="sr"><span>Duplicate choice</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>R</kbd></span></div>
+          <div class="sr"><span>Group / Ungroup</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>G</kbd></span></div>
+          <div class="sr"><span>Insert Text box</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>T</kbd></span></div>
+        </div>
+        <div class="ss"><div class="st">Search & Navigation</div>
+          <div class="sr"><span>Search & Replace</span><span class="sk"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>H</kbd></span></div>
+          <div class="sr"><span>Jump to question #</span><span class="sk"><kbd>⌥</kbd><kbd>G</kbd></span></div>
+          <div class="sr"><span>Next question</span><span class="sk"><kbd>⌘</kbd><kbd>]</kbd></span></div>
+          <div class="sr"><span>Previous question</span><span class="sk"><kbd>⌘</kbd><kbd>[</kbd></span></div>
+          <div class="sr"><span>Open Comment panel</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>J</kbd></span></div>
+        </div>
+        <div class="ss"><div class="st">Logic Management</div>
+          <div class="sr"><span>Toggle Logic / GUI</span><span class="sk"><kbd>⌥</kbd><kbd>L</kbd></span></div>
+          <div class="sr"><span>Copy logic</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>Y</kbd></span></div>
+          <div class="sr"><span>Paste logic</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>U</kbd></span></div>
+          <div class="sr"><span>Delete logic</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>⌫</kbd></span></div>
+        </div>
+        <div class="ss"><div class="st">View & Interface</div>
+          <div class="sr"><span>Toggle Question / Logic modes</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>L</kbd></span></div>
+          <div class="sr"><span>Keyboard shortcuts</span><span class="sk"><kbd>⌘</kbd><kbd>/</kbd></span></div>
+        </div>
+        <div class="ss"><div class="st">Media & Rich Text</div>
+          <div class="sr"><span>Insert hyperlink</span><span class="sk"><kbd>⌘</kbd><kbd>K</kbd></span></div>
+          <div class="sr"><span>Bold</span><span class="sk"><kbd>⌘</kbd><kbd>B</kbd></span></div>
+          <div class="sr"><span>Underline</span><span class="sk"><kbd>⌘</kbd><kbd>U</kbd></span></div>
+          <div class="sr"><span>Text color</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>K</kbd></span></div>
+          <div class="sr"><span>Font size</span><span class="sk"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>Z</kbd></span></div>
+        </div>
+      </div>
+      <div class="md-f">Mac: ⌘ = Cmd · ⌥ = Option · ⇧ = Shift &nbsp;|&nbsp; Press <kbd>Esc</kbd> to close</div>
+    </div>
+  </div>
+
+
+
+  <script>
+    // ========== Question Data ==========
+    const questions = [
+      { id:1, text:'現在、製品をどの程度利用していますか？', required:true, type:'Radio button',
+        choices:['毎日利用している','週に数回利用している','月に数回利用している','ほとんど利用していない'] },
+      { id:2, text:'製品をどのようにして知りましたか？（複数選択可）', required:true, type:'Radio button',
+        choices:['ウェブサイト','SNS','口コミ・紹介','広告'], pageBreakBefore:true },
+      { id:3, text:'製品の満足度を教えてください。', required:false, type:'Radio button',
+        choices:['とても満足','やや満足','普通','やや不満','とても不満'] },
+      { id:4, text:'最もよく利用する機能はどれですか？', required:true, type:'Radio button',
+        choices:['レポート機能','データ分析','アンケート作成','ダッシュボード','API連携'] },
+      { id:5, text:'製品の改善してほしい点を教えてください。', required:false, type:'Radio button',
+        choices:['操作性','デザイン','速度・パフォーマンス','機能の充実','料金','サポート対応'] },
+      { id:6, text:'今後も製品を利用し続けたいと思いますか？', required:true, type:'Radio button',
+        choices:['ぜひ利用したい','どちらかといえば利用したい','どちらともいえない','あまり利用したくない','利用したくない'], pageBreakBefore:true },
+      { id:7, text:'製品を他の方にも勧めたいと思いますか？（NPS）', required:true, type:'Radio button',
+        choices:['0 - 全く勧めない','1','2','3','4','5','6','7','8','9','10 - 強く勧めたい'] },
+    ];
+    let nextId = 8;
+    let sq = 1; // selected question index (1-based)
+
+    const RADIO_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>';
+
+    function renderQuestions() {
+      const ct = document.getElementById('q-container');
+      ct.innerHTML = '';
+      questions.forEach((q, i) => {
+        if (q.pageBreakBefore) {
+          ct.insertAdjacentHTML('beforeend',
+            '<div class="pb"><span class="pb-l">Page break</span><span class="pb-ln"></span><button class="pb-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>');
+        }
+        const num = i + 1;
+        const sel = num === sq ? ' sel' : '';
+        let choicesHtml = q.choices.map((c, ci) =>
+          `<div class="qo"><span class="qrd"></span><span class="qcn">${ci+1}</span><span class="qo-txt" contenteditable="true">${c}</span></div>`
+        ).join('');
+        ct.insertAdjacentHTML('beforeend',
+          `<div class="qc${sel}" data-idx="${i}" tabindex="0">
+            <div class="qh"><span class="qn">Q${num}</span>${q.required ? '<span class="qr">Required</span>' : ''}</div>
+            <div class="qt">${RADIO_SVG}${q.type} <span class="ca">▾</span></div>
+            <div class="qx" contenteditable="true">${q.text}</div>
+            ${choicesHtml}
+          </div>`);
+      });
+      // Re-bind click
+      ct.querySelectorAll('.qc').forEach(el => {
+        el.addEventListener('click', () => { sq = parseInt(el.dataset.idx) + 1; refreshSel(); });
+      });
+      refreshSel();
+    }
+
+    function refreshSel() {
+      document.querySelectorAll('.qc').forEach((el, i) => {
+        el.classList.toggle('sel', i + 1 === sq);
+      });
+    }
+
+    function getSelCard() { return document.querySelectorAll('.qc')[sq - 1]; }
+
+    // ========== Toast — MMDS compliant ==========
+    const IC = {
+      ok:'<svg class="tt-i" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+      info:'<svg class="tt-i" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+      warn:'<svg class="tt-i" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+    };
+    const XSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    const TCLASS = { ok:'tt--ok', info:'tt--info', warn:'tt--warn' };
+
+    function T(m, i='ok', k=null) {
+      const e = document.createElement('div');
+      e.className = 'tt ' + (TCLASS[i] || TCLASS.ok);
+      let kh = k ? '<span class="tt-k">' + k.map(x=>'<kbd>'+x+'</kbd>').join('') + '</span>' : '';
+      e.innerHTML = (IC[i]||IC.ok) + '<span class="tt-m">' + m + '</span>' + kh + '<button class="tt-x" aria-label="Dismiss">' + XSVG + '</button>';
+      document.getElementById('tc').appendChild(e);
+      // Dismiss on X click
+      e.querySelector('.tt-x').addEventListener('click', () => { e.classList.add('ex'); setTimeout(() => e.remove(), 200); });
+      // Auto-dismiss after 4s
+      const timer = setTimeout(() => { e.classList.add('ex'); setTimeout(() => e.remove(), 200); }, 4000);
+      e.querySelector('.tt-x').addEventListener('click', () => clearTimeout(timer));
+    }
+
+    // ========== Modal ==========
+    const ov = document.getElementById('ov');
+    function om() { ov.classList.add('op'); }
+    function cm() { ov.classList.remove('op'); }
+    document.getElementById('mx').addEventListener('click', cm);
+    ov.addEventListener('click', e => { if (e.target === ov) cm(); });
+
+    // ========== Comment Panel ==========
+    const cpanel = document.getElementById('comment-panel');
+    function toggleComments() { cpanel.classList.toggle('open'); }
+    document.getElementById('cp-close').addEventListener('click', () => cpanel.classList.remove('open'));
+    document.getElementById('btn-comments').addEventListener('click', toggleComments);
+
+    // ========== Undo / Redo Stack ==========
+    const undoStack = [];
+    const redoStack = [];
+    function snapshot() {
+      undoStack.push({ data: JSON.parse(JSON.stringify(questions)), sq });
+      redoStack.length = 0; // clear redo on new action
+    }
+    function doUndo() {
+      if (undoStack.length === 0) { T('Nothing to undo','warn',['⌘','Z']); return; }
+      redoStack.push({ data: JSON.parse(JSON.stringify(questions)), sq });
+      const state = undoStack.pop();
+      questions.length = 0;
+      state.data.forEach(q => questions.push(q));
+      sq = state.sq;
+      renderQuestions();
+      T('Undo','info',['⌘','Z']);
+    }
+    function doRedo() {
+      if (redoStack.length === 0) { T('Nothing to redo','warn',['⌘','⇧','Z']); return; }
+      undoStack.push({ data: JSON.parse(JSON.stringify(questions)), sq });
+      const state = redoStack.pop();
+      questions.length = 0;
+      state.data.forEach(q => questions.push(q));
+      sq = state.sq;
+      renderQuestions();
+      T('Redo','info',['⌘','⇧','Z']);
+    }
+
+    // ========== Move Question ==========
+    function moveQ(dir) {
+      const idx = sq - 1;
+      if (dir === -1 && idx === 0) { T('Already at top','warn',['⌥','↑']); return; }
+      if (dir === 1 && idx >= questions.length - 1) { T('Already at bottom','warn',['⌥','↓']); return; }
+      snapshot();
+      const swapIdx = idx + dir;
+      [questions[idx], questions[swapIdx]] = [questions[swapIdx], questions[idx]];
+      sq = swapIdx + 1;
+      renderQuestions();
+      const card = getSelCard();
+      if (card) { card.classList.add(dir === -1 ? 'move-up' : 'move-down'); setTimeout(() => card.classList.remove('move-up','move-down'), 300); }
+      card?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      T('Q' + sq + (dir === -1 ? ' moved up' : ' moved down'), 'ok', ['⌥', dir === -1 ? '↑' : '↓']);
+    }
+
+    // ========== Duplicate Question ==========
+    function dupQ() {
+      snapshot();
+      const idx = sq - 1;
+      const orig = questions[idx];
+      const clone = { ...orig, id: nextId++, choices: [...orig.choices], required: orig.required, pageBreakBefore: false };
+      clone.text = orig.text + '（コピー）';
+      questions.splice(idx + 1, 0, clone);
+      sq = idx + 2;
+      renderQuestions();
+      getSelCard()?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      T('Q' + (idx + 1) + ' duplicated as Q' + sq, 'ok', ['⌘','⇧','D']);
+    }
+
+    // ========== Keyboard Handler ==========
+    document.addEventListener('keydown', e => {
+      const c = e.metaKey || e.ctrlKey, a = e.altKey, s = e.shiftKey, k = e.key.toLowerCase();
+      const ae = document.activeElement;
+      const editing = ae && (ae.isContentEditable || ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+
+      // Modal toggle always
+      if (c && k === '/') { e.preventDefault(); ov.classList.contains('op') ? cm() : om(); return; }
+      if (k === 'escape') { if (ov.classList.contains('op')) { cm(); return; } if (cpanel.classList.contains('open')) { cpanel.classList.remove('open'); return; } if (editing) { ae.blur(); return; } }
+      if (ov.classList.contains('op')) return;
+
+      // Rich text shortcuts work INSIDE editable fields
+      if (editing) {
+        if (c && !s && k === 'b') { e.preventDefault(); document.execCommand('bold'); T('Bold applied','info',['⌘','B']); return; }
+        if (c && !s && k === 'i') { e.preventDefault(); document.execCommand('italic'); T('Italic applied','info',['⌘','I']); return; }
+        if (c && !s && k === 'u') { e.preventDefault(); document.execCommand('underline'); T('Underline applied','info',['⌘','U']); return; }
+        if (c && !s && k === 'k') { e.preventDefault(); const url = prompt('Enter URL:'); if (url) document.execCommand('createLink', false, url); T('Hyperlink inserted','info',['⌘','K']); return; }
+        if (c && !s && !a && k === 's') { e.preventDefault(); T('Survey saved','ok',['⌘','S']); return; }
+        // Let ⌘Z and ⌘⇧Z pass through to browser native undo/redo for text editing
+        if (c && !s && k === 'z') { /* allow browser undo */ return; }
+        if (c && s && k === 'z') { /* allow browser redo */ return; }
+        if (k === 'enter' && !s && ae.classList.contains('qo-txt')) { e.preventDefault(); T('New choice added','ok',['↩']); return; }
+        if (k === 'enter' && s && ae.classList.contains('qo-txt')) { T('Soft line break','info',['⇧','↩']); return; }
+        if (a && s && k === 'q') { e.preventDefault(); T('New question added after Q'+sq,'ok',['⌥','⇧','Q']); return; }
+        if (a && s && k === 't') { e.preventDefault(); T('Text box inserted','ok',['⌥','⇧','T']); return; }
+        if (a && s && k === 'g') { e.preventDefault(); T('Choice grouped','ok',['⌥','⇧','G']); return; }
+        if (a && s && k === 'k') { e.preventDefault(); T('Text color picker','info',['⌥','⇧','K']); return; }
+        if (a && s && k === 'z') { e.preventDefault(); T('Font size picker','info',['⌥','⇧','Z']); return; }
+        if (a && s && e.key === 'ArrowUp') { e.preventDefault(); T('Choice moved up','ok',['⌥','⇧','↑']); return; }
+        if (a && s && e.key === 'ArrowDown') { e.preventDefault(); T('Choice moved down','ok',['⌥','⇧','↓']); return; }
+        if (a && s && k === 'r') { e.preventDefault(); T('Choice duplicated','ok',['⌥','⇧','R']); return; }
+        if (k === 'backspace' && ae.classList.contains('qo-txt') && ae.textContent.trim() === '') { e.preventDefault(); T('Choice deleted','warn',['⌫']); return; }
+        return;
+      }
+
+      // Non-editing shortcuts
+      if (c && !s && !a && k === 's') { e.preventDefault(); T('Survey saved','ok',['⌘','S']); return; }
+      if (a && s && k === 'v') { e.preventDefault(); T('Opening preview…','info',['⌥','⇧','V']); return; }
+      if (a && s && k === 'q') { e.preventDefault(); T('New question added after Q'+sq,'ok',['⌥','⇧','Q']); return; }
+      if (c && s && k === 'd') { e.preventDefault(); dupQ(); return; }
+      if (a && !s && e.key === 'ArrowUp') { e.preventDefault(); moveQ(-1); return; }
+      if (a && !s && e.key === 'ArrowDown') { e.preventDefault(); moveQ(1); return; }
+      if (c && !s && k === ']') { e.preventDefault(); if (sq < questions.length) { sq++; refreshSel(); getSelCard()?.scrollIntoView({behavior:'smooth',block:'nearest'}); T('Navigated to Q'+sq,'info',['⌘',']']); } return; }
+      if (c && !s && k === '[') { e.preventDefault(); if (sq > 1) { sq--; refreshSel(); getSelCard()?.scrollIntoView({behavior:'smooth',block:'nearest'}); T('Navigated to Q'+sq,'info',['⌘','[']); } return; }
+      if (a && !s && k === 'e') { e.preventDefault(); T('Q'+sq+' expanded','info',['⌥','E']); return; }
+      if (a && !s && k === 'c') { e.preventDefault(); T('Q'+sq+' collapsed','info',['⌥','C']); return; }
+      if (a && s && k === 'e') { e.preventDefault(); T('All questions expanded','info',['⌥','⇧','E']); return; }
+      if (a && s && k === 'c') { e.preventDefault(); T('All questions collapsed','info',['⌥','⇧','C']); return; }
+      if (a && !s && k === 'l') { e.preventDefault(); T('Switched to Logic view','info',['⌥','L']); return; }
+      if (a && s && k === 'l') { e.preventDefault(); T('Toggled Question ↔ Logic mode','info',['⌥','⇧','L']); return; }
+      if (c && !s && k === 'z') { e.preventDefault(); doUndo(); return; }
+      if (c && s && k === 'z') { e.preventDefault(); doRedo(); return; }
+      if (c && s && k === 'h') { e.preventDefault(); T('Search & Replace opened','info',['⌘','⇧','H']); return; }
+      if (a && !s && k === 'g') { e.preventDefault(); T('Jump to question…','info',['⌥','G']); return; }
+      if (a && s && k === 'm') { e.preventDefault(); T('Comment added to Q'+sq,'ok',['⌥','⇧','M']); return; }
+      if (a && s && k === 'j') { e.preventDefault(); toggleComments(); T(cpanel.classList.contains('open')?'Comment panel opened':'Comment panel closed','info',['⌥','⇧','J']); return; }
+      if (a && s && k === 'p') { e.preventDefault(); T('Publishing survey…','info',['⌥','⇧','P']); return; }
+      if (a && s && k === 'n') { e.preventDefault(); T('Creating new blank survey…','info',['⌥','⇧','N']); return; }
+      if (a && s && k === 'd') { e.preventDefault(); T('Duplicating survey…','info',['⌥','⇧','D']); return; }
+      if (a && s && k === 'y') { e.preventDefault(); T('Logic copied from Q'+sq,'ok',['⌥','⇧','Y']); return; }
+      if (a && s && k === 'u') { e.preventDefault(); T('Logic pasted to Q'+sq,'ok',['⌥','⇧','U']); return; }
+      if (c && !s && k === 'k') { e.preventDefault(); T('Insert hyperlink','info',['⌘','K']); return; }
+      if (c && !s && k === 'b') { e.preventDefault(); T('Bold toggled','info',['⌘','B']); return; }
+      if (c && !s && k === 'i') { e.preventDefault(); T('Italic toggled','info',['⌘','I']); return; }
+      if (c && !s && k === 'u') { e.preventDefault(); T('Underline toggled','info',['⌘','U']); return; }
+      if (k === 'f2') { e.preventDefault(); T('Rename mode activated','info',['F2']); return; }
+      if (k === 'backspace' && !c && !a && !s) { e.preventDefault(); T('Q'+sq+' deleted','warn',['⌫']); return; }
+    });
+
+    // ========== Button Clicks ==========
+    document.getElementById('btn-save').addEventListener('click', () => T('Survey saved','ok',['⌘','S']));
+    document.getElementById('btn-preview').addEventListener('click', () => T('Opening preview…','info',['⌥','⇧','V']));
+    document.getElementById('btn-pub').addEventListener('click', () => T('Publishing survey…','info',['⌥','⇧','P']));
+    document.getElementById('btn-logic').addEventListener('click', () => T('Switched to Logic view','info',['⌥','L']));
+    document.getElementById('btn-shortcuts').addEventListener('click', om);
+
+    // ========== Onboarding Banner ==========
+    const obBanner = document.getElementById('ob-banner');
+    document.getElementById('ob-dismiss').addEventListener('click', () => {
+      obBanner.style.transition = 'all .25s ease';
+      obBanner.style.opacity = '0';
+      obBanner.style.maxHeight = '0';
+      obBanner.style.padding = '0';
+      obBanner.style.overflow = 'hidden';
+      document.querySelector('.ml').classList.add('no-banner');
+      setTimeout(() => obBanner.classList.add('hidden'), 300);
+    });
+    document.getElementById('ob-start-tour').addEventListener('click', () => {
+      obBanner.style.transition = 'all .25s ease';
+      obBanner.style.opacity = '0';
+      obBanner.style.maxHeight = '0';
+      obBanner.style.padding = '0';
+      obBanner.style.overflow = 'hidden';
+      document.querySelector('.ml').classList.add('no-banner');
+      setTimeout(() => { obBanner.classList.add('hidden'); startTour(); }, 300);
+    });
+
+    // ========== Tooltip Tour ==========
+    const tourSteps = [
+      {
+        target: '#btn-save',
+        title: 'Save instantly',
+        desc: 'Press <kbd>⌘</kbd><kbd>S</kbd> to save your survey without reaching for the mouse.',
+        arrow: 'arrow-top',
+        offsetY: 8
+      },
+      {
+        target: '.qc.sel',
+        title: 'Move questions with your keyboard',
+        desc: 'Select a question, then press <kbd>⌥</kbd><kbd>↑</kbd> or <kbd>⌥</kbd><kbd>↓</kbd> to reorder. Press <kbd>⌘</kbd><kbd>⇧</kbd><kbd>D</kbd> to duplicate.',
+        arrow: 'arrow-top',
+        offsetY: 8
+      },
+      {
+        target: '#btn-shortcuts',
+        title: 'View all shortcuts',
+        desc: 'Press <kbd>⌘</kbd><kbd>/</kbd> anytime to see every available shortcut. You can also click this button.',
+        arrow: 'arrow-right-top',
+        offsetY: 8
+      }
+    ];
+
+    let tourIdx = 0;
+    const tourOverlay = document.getElementById('tour-overlay');
+    const tourCallout = document.getElementById('tour-callout');
+    const tourTitle = document.getElementById('tour-title');
+    const tourDesc = document.getElementById('tour-desc');
+    const tourDots = document.getElementById('tour-dots');
+    const tourStepLabel = document.getElementById('tour-step-label');
+    let prevHighlight = null;
+
+    function startTour() {
+      tourIdx = 0;
+      tourOverlay.classList.add('active');
+      showTourStep();
+    }
+
+    function showTourStep() {
+      if (tourIdx >= tourSteps.length) { endTour(); return; }
+      const step = tourSteps[tourIdx];
+      const target = document.querySelector(step.target);
+      if (!target) { tourIdx++; showTourStep(); return; }
+
+      // Highlight target
+      if (prevHighlight) prevHighlight.classList.remove('tour-highlight');
+      target.classList.add('tour-highlight');
+      prevHighlight = target;
+
+      // Position callout
+      const rect = target.getBoundingClientRect();
+      tourCallout.className = 'tour-callout active ' + step.arrow;
+
+      if (step.arrow === 'arrow-top' || step.arrow === 'arrow-right-top') {
+        tourCallout.style.top = (rect.bottom + (step.offsetY || 0)) + 'px';
+        tourCallout.style.bottom = 'auto';
+      } else {
+        tourCallout.style.bottom = (window.innerHeight - rect.top + (step.offsetY || 0)) + 'px';
+        tourCallout.style.top = 'auto';
+      }
+
+      if (step.arrow === 'arrow-right-top') {
+        tourCallout.style.left = 'auto';
+        tourCallout.style.right = (window.innerWidth - rect.right) + 'px';
+      } else {
+        tourCallout.style.left = Math.max(12, rect.left) + 'px';
+        tourCallout.style.right = 'auto';
+      }
+
+      // Content
+      tourTitle.textContent = step.title;
+      tourDesc.innerHTML = step.desc;
+      tourStepLabel.textContent = (tourIdx + 1) + ' / ' + tourSteps.length;
+
+      // Dots
+      tourDots.innerHTML = tourSteps.map((_, i) =>
+        '<span class="tour-dot' + (i === tourIdx ? ' on' : '') + '"></span>'
+      ).join('');
+
+      // Button label
+      document.getElementById('tour-next').textContent = tourIdx === tourSteps.length - 1 ? 'Got it' : 'Next';
+    }
+
+    function endTour() {
+      tourOverlay.classList.remove('active');
+      tourCallout.classList.remove('active');
+      if (prevHighlight) { prevHighlight.classList.remove('tour-highlight'); prevHighlight = null; }
+    }
+
+    document.getElementById('tour-next').addEventListener('click', () => { tourIdx++; showTourStep(); });
+    document.getElementById('tour-skip').addEventListener('click', endTour);
+    tourOverlay.addEventListener('click', endTour);
+
+    // ========== Init ==========
+    renderQuestions();
+  </script>
+</body>
+</html>
