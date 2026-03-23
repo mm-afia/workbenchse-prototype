@@ -138,7 +138,6 @@
     .qt .ca { opacity:0.4; font-size:10px; margin-left:2px; }
     .qx { margin-bottom:var(--spacing-8); font-weight:var(--font-weight-light); }
     .qx b, .qx strong, .qo-txt b, .qo-txt strong { font-weight:800; color:var(--color-object-high); }
-    .qx i, .qx em, .qo-txt i, .qo-txt em { font-style:italic; }
     .qx u, .qo-txt u { text-decoration:underline; text-decoration-color:var(--color-text-accent); text-underline-offset:2px; }
     .qx[contenteditable]:focus { outline:none; background:rgba(5,92,178,0.04); border-radius:var(--radius-s); padding:var(--spacing-2) var(--spacing-3); margin-left:calc(-1 * var(--spacing-3)); margin-right:calc(-1 * var(--spacing-3)); }
     .qo { display:flex; align-items:center; gap:var(--spacing-4); padding:var(--spacing-4) 0; font-weight:var(--font-weight-light); }
@@ -297,6 +296,50 @@
     .tour-next { background:var(--color-surface-primary); color:#fff; border:none; font-size:var(--font-size-sm); font-weight:var(--font-weight-medium); cursor:pointer; font-family:var(--font-family-base); padding:var(--spacing-2) var(--spacing-8); border-radius:var(--radius-s); min-height:32px; }
     .tour-next:hover { background:var(--color-text-accent); }
 
+    /* Help Menu */
+    .help-wrap { position:relative; }
+    .help-btn {
+      width:36px; height:36px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; background:none;
+      border:1px solid var(--color-border-low);
+      color:var(--color-text-medium);
+      font-family:var(--font-family-en);
+      font-size:var(--font-size-body);
+      font-weight:var(--font-weight-semibold);
+      transition:all .12s ease;
+    }
+    .help-btn:hover { background:rgba(10,24,38,0.04); color:var(--color-object-high); border-color:var(--color-border-medium); }
+    .help-menu {
+      position:absolute; top:calc(100% + 6px); right:0;
+      background:var(--color-surface-component-bg);
+      border:1px solid var(--color-border-low);
+      border-radius:var(--radius-m);
+      box-shadow:var(--elevation-3);
+      min-width:220px;
+      padding:var(--spacing-3) 0;
+      z-index:300;
+      display:none;
+      animation:helpIn .15s ease;
+    }
+    .help-menu.open { display:block; }
+    @keyframes helpIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+    .help-menu-item {
+      display:flex; align-items:center; gap:var(--spacing-4);
+      padding:var(--spacing-4) var(--spacing-6);
+      font-size:var(--font-size-body);
+      font-weight:var(--font-weight-light);
+      color:var(--color-object-high);
+      cursor:pointer; background:none; border:none; width:100%;
+      font-family:var(--font-family-base);
+      text-align:left;
+    }
+    .help-menu-item:hover { background:rgba(10,24,38,0.04); }
+    .help-menu-item svg { width:16px; height:16px; color:var(--color-text-medium); flex-shrink:0; }
+    .help-menu-item .hm-keys { margin-left:auto; display:flex; gap:2px; }
+    .help-menu-item .hm-keys kbd { background:var(--color-background-layer-1); border:1px solid var(--color-border-low); color:var(--color-text-medium); font-family:var(--font-family-en); font-size:9px; min-width:16px; height:16px; padding:0 3px; display:inline-flex; align-items:center; justify-content:center; border-radius:2px; }
+    .help-menu-sep { height:1px; background:var(--color-border-low); margin:var(--spacing-2) 0; }
+
     /* Highlight ring for tour targets */
     .tour-highlight { position:relative; z-index:8002; }
   </style>
@@ -354,7 +397,25 @@
         <button class="ei ht" id="btn-comments" aria-label="Comments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg><span class="tp tp--r"><span class="tp-l">Comments</span><kbd>⌥</kbd><kbd>⇧</kbd><kbd>J</kbd></span></button>
         <button class="ei ht" aria-label="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="tp tp--r"><span class="tp-l">History</span></span></button>
         <button class="ei ht" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="tp tp--r"><span class="tp-l">Search</span><kbd>⌘</kbd><kbd>⇧</kbd><kbd>H</kbd></span></button>
-        <button class="ei ht" id="btn-shortcuts" aria-label="Keyboard shortcuts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8.01"/><line x1="10" y1="8" x2="10" y2="8.01"/><line x1="14" y1="8" x2="14" y2="8.01"/><line x1="18" y1="8" x2="18" y2="8.01"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><line x1="14" y1="12" x2="14" y2="12.01"/><line x1="18" y1="12" x2="18" y2="12.01"/><line x1="8" y1="16" x2="16" y2="16"/></svg><span class="tp tp--r"><span class="tp-l">Shortcuts</span><kbd>⌘</kbd><kbd>/</kbd></span></button>
+        <div class="help-wrap">
+          <button class="help-btn" id="help-btn" aria-label="Help">?</button>
+          <div class="help-menu" id="help-menu">
+            <button class="help-menu-item" id="hm-shortcuts">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8.01"/><line x1="10" y1="8" x2="10" y2="8.01"/><line x1="14" y1="8" x2="14" y2="8.01"/><line x1="18" y1="8" x2="18" y2="8.01"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="10" y1="12" x2="10" y2="12.01"/><line x1="14" y1="12" x2="14" y2="12.01"/><line x1="18" y1="12" x2="18" y2="12.01"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+              Keyboard shortcuts
+              <span class="hm-keys"><kbd>⌘</kbd><kbd>/</kbd></span>
+            </button>
+            <button class="help-menu-item" id="hm-tour">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Take a tour
+            </button>
+            <div class="help-menu-sep"></div>
+            <button class="help-menu-item" id="hm-help">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              Help center
+            </button>
+          </div>
+        </div>
       </div>
       <div id="q-container"></div>
       <div style="height:80px"></div>
@@ -563,40 +624,11 @@
     document.getElementById('cp-close').addEventListener('click', () => cpanel.classList.remove('open'));
     document.getElementById('btn-comments').addEventListener('click', toggleComments);
 
-    // ========== Undo / Redo Stack ==========
-    const undoStack = [];
-    const redoStack = [];
-    function snapshot() {
-      undoStack.push({ data: JSON.parse(JSON.stringify(questions)), sq });
-      redoStack.length = 0; // clear redo on new action
-    }
-    function doUndo() {
-      if (undoStack.length === 0) { T('Nothing to undo','warn',['⌘','Z']); return; }
-      redoStack.push({ data: JSON.parse(JSON.stringify(questions)), sq });
-      const state = undoStack.pop();
-      questions.length = 0;
-      state.data.forEach(q => questions.push(q));
-      sq = state.sq;
-      renderQuestions();
-      T('Undo','info',['⌘','Z']);
-    }
-    function doRedo() {
-      if (redoStack.length === 0) { T('Nothing to redo','warn',['⌘','⇧','Z']); return; }
-      undoStack.push({ data: JSON.parse(JSON.stringify(questions)), sq });
-      const state = redoStack.pop();
-      questions.length = 0;
-      state.data.forEach(q => questions.push(q));
-      sq = state.sq;
-      renderQuestions();
-      T('Redo','info',['⌘','⇧','Z']);
-    }
-
     // ========== Move Question ==========
     function moveQ(dir) {
       const idx = sq - 1;
       if (dir === -1 && idx === 0) { T('Already at top','warn',['⌥','↑']); return; }
       if (dir === 1 && idx >= questions.length - 1) { T('Already at bottom','warn',['⌥','↓']); return; }
-      snapshot();
       const swapIdx = idx + dir;
       [questions[idx], questions[swapIdx]] = [questions[swapIdx], questions[idx]];
       sq = swapIdx + 1;
@@ -609,7 +641,6 @@
 
     // ========== Duplicate Question ==========
     function dupQ() {
-      snapshot();
       const idx = sq - 1;
       const orig = questions[idx];
       const clone = { ...orig, id: nextId++, choices: [...orig.choices], required: orig.required, pageBreakBefore: false };
@@ -621,70 +652,96 @@
       T('Q' + (idx + 1) + ' duplicated as Q' + sq, 'ok', ['⌘','⇧','D']);
     }
 
+    // ========== Add New Question ==========
+    function addQ() {
+      const newQ = {
+        id: nextId++,
+        text: '新しい質問を入力してください',
+        required: false,
+        type: 'Radio button',
+        choices: ['選択肢1', '選択肢2', '選択肢3']
+      };
+      questions.push(newQ);
+      sq = questions.length;
+      renderQuestions();
+      getSelCard()?.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      // Focus the question text for immediate editing
+      setTimeout(() => {
+        const qx = getSelCard()?.querySelector('.qx');
+        if (qx) { qx.focus(); document.execCommand('selectAll'); }
+      }, 100);
+      T('Q' + sq + ' added', 'ok', ['⌥','⇧','Q']);
+    }
+
     // ========== Keyboard Handler ==========
     document.addEventListener('keydown', e => {
       const c = e.metaKey || e.ctrlKey, a = e.altKey, s = e.shiftKey, k = e.key.toLowerCase();
+      const code = e.code;
       const ae = document.activeElement;
       const editing = ae && (ae.isContentEditable || ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
 
+      // Helper: detect Alt+Shift+Key reliably across Mac keyboard layouts
+      // On Mac with some input methods, Option+Shift+Q may produce a special char
+      // but e.code stays 'KeyQ' and e.altKey stays true
+      function altShift(keyCode) { return a && s && code === keyCode; }
+      function altOnly(keyCode) { return a && !s && code === keyCode; }
+
       // Modal toggle always
       if (c && k === '/') { e.preventDefault(); ov.classList.contains('op') ? cm() : om(); return; }
-      if (k === 'escape') { if (ov.classList.contains('op')) { cm(); return; } if (cpanel.classList.contains('open')) { cpanel.classList.remove('open'); return; } if (editing) { ae.blur(); return; } }
+      if (k === 'escape') {
+        if (ov.classList.contains('op')) { cm(); return; }
+        if (cpanel.classList.contains('open')) { cpanel.classList.remove('open'); return; }
+        if (document.getElementById('help-menu').classList.contains('open')) { document.getElementById('help-menu').classList.remove('open'); return; }
+        if (editing) { ae.blur(); return; }
+      }
       if (ov.classList.contains('op')) return;
 
-      // Rich text shortcuts work INSIDE editable fields
+      // Rich text shortcuts INSIDE editable fields
       if (editing) {
         if (c && !s && k === 'b') { e.preventDefault(); document.execCommand('bold'); T('Bold applied','info',['⌘','B']); return; }
-        if (c && !s && k === 'i') { e.preventDefault(); document.execCommand('italic'); T('Italic applied','info',['⌘','I']); return; }
         if (c && !s && k === 'u') { e.preventDefault(); document.execCommand('underline'); T('Underline applied','info',['⌘','U']); return; }
         if (c && !s && k === 'k') { e.preventDefault(); const url = prompt('Enter URL:'); if (url) document.execCommand('createLink', false, url); T('Hyperlink inserted','info',['⌘','K']); return; }
         if (c && !s && !a && k === 's') { e.preventDefault(); T('Survey saved','ok',['⌘','S']); return; }
-        // Let ⌘Z and ⌘⇧Z pass through to browser native undo/redo for text editing
-        if (c && !s && k === 'z') { /* allow browser undo */ return; }
-        if (c && s && k === 'z') { /* allow browser redo */ return; }
         if (k === 'enter' && !s && ae.classList.contains('qo-txt')) { e.preventDefault(); T('New choice added','ok',['↩']); return; }
         if (k === 'enter' && s && ae.classList.contains('qo-txt')) { T('Soft line break','info',['⇧','↩']); return; }
-        if (a && s && k === 'q') { e.preventDefault(); T('New question added after Q'+sq,'ok',['⌥','⇧','Q']); return; }
-        if (a && s && k === 't') { e.preventDefault(); T('Text box inserted','ok',['⌥','⇧','T']); return; }
-        if (a && s && k === 'g') { e.preventDefault(); T('Choice grouped','ok',['⌥','⇧','G']); return; }
-        if (a && s && k === 'k') { e.preventDefault(); T('Text color picker','info',['⌥','⇧','K']); return; }
-        if (a && s && k === 'z') { e.preventDefault(); T('Font size picker','info',['⌥','⇧','Z']); return; }
+        if (altShift('KeyQ')) { e.preventDefault(); addQ(); return; }
+        if (altShift('KeyT')) { e.preventDefault(); T('Text box inserted','ok',['⌥','⇧','T']); return; }
+        if (altShift('KeyG')) { e.preventDefault(); T('Choice grouped','ok',['⌥','⇧','G']); return; }
+        if (altShift('KeyK')) { e.preventDefault(); T('Text color picker','info',['⌥','⇧','K']); return; }
+        if (altShift('KeyZ')) { e.preventDefault(); T('Font size picker','info',['⌥','⇧','Z']); return; }
         if (a && s && e.key === 'ArrowUp') { e.preventDefault(); T('Choice moved up','ok',['⌥','⇧','↑']); return; }
         if (a && s && e.key === 'ArrowDown') { e.preventDefault(); T('Choice moved down','ok',['⌥','⇧','↓']); return; }
-        if (a && s && k === 'r') { e.preventDefault(); T('Choice duplicated','ok',['⌥','⇧','R']); return; }
+        if (altShift('KeyR')) { e.preventDefault(); T('Choice duplicated','ok',['⌥','⇧','R']); return; }
         if (k === 'backspace' && ae.classList.contains('qo-txt') && ae.textContent.trim() === '') { e.preventDefault(); T('Choice deleted','warn',['⌫']); return; }
         return;
       }
 
       // Non-editing shortcuts
       if (c && !s && !a && k === 's') { e.preventDefault(); T('Survey saved','ok',['⌘','S']); return; }
-      if (a && s && k === 'v') { e.preventDefault(); T('Opening preview…','info',['⌥','⇧','V']); return; }
-      if (a && s && k === 'q') { e.preventDefault(); T('New question added after Q'+sq,'ok',['⌥','⇧','Q']); return; }
-      if (c && s && k === 'd') { e.preventDefault(); dupQ(); return; }
+      if (altShift('KeyV')) { e.preventDefault(); T('Opening preview…','info',['⌥','⇧','V']); return; }
+      if (altShift('KeyQ')) { e.preventDefault(); addQ(); return; }
+      if (c && s && code === 'KeyD') { e.preventDefault(); dupQ(); return; }
       if (a && !s && e.key === 'ArrowUp') { e.preventDefault(); moveQ(-1); return; }
       if (a && !s && e.key === 'ArrowDown') { e.preventDefault(); moveQ(1); return; }
       if (c && !s && k === ']') { e.preventDefault(); if (sq < questions.length) { sq++; refreshSel(); getSelCard()?.scrollIntoView({behavior:'smooth',block:'nearest'}); T('Navigated to Q'+sq,'info',['⌘',']']); } return; }
       if (c && !s && k === '[') { e.preventDefault(); if (sq > 1) { sq--; refreshSel(); getSelCard()?.scrollIntoView({behavior:'smooth',block:'nearest'}); T('Navigated to Q'+sq,'info',['⌘','[']); } return; }
-      if (a && !s && k === 'e') { e.preventDefault(); T('Q'+sq+' expanded','info',['⌥','E']); return; }
-      if (a && !s && k === 'c') { e.preventDefault(); T('Q'+sq+' collapsed','info',['⌥','C']); return; }
-      if (a && s && k === 'e') { e.preventDefault(); T('All questions expanded','info',['⌥','⇧','E']); return; }
-      if (a && s && k === 'c') { e.preventDefault(); T('All questions collapsed','info',['⌥','⇧','C']); return; }
-      if (a && !s && k === 'l') { e.preventDefault(); T('Switched to Logic view','info',['⌥','L']); return; }
-      if (a && s && k === 'l') { e.preventDefault(); T('Toggled Question ↔ Logic mode','info',['⌥','⇧','L']); return; }
-      if (c && !s && k === 'z') { e.preventDefault(); doUndo(); return; }
-      if (c && s && k === 'z') { e.preventDefault(); doRedo(); return; }
-      if (c && s && k === 'h') { e.preventDefault(); T('Search & Replace opened','info',['⌘','⇧','H']); return; }
-      if (a && !s && k === 'g') { e.preventDefault(); T('Jump to question…','info',['⌥','G']); return; }
-      if (a && s && k === 'm') { e.preventDefault(); T('Comment added to Q'+sq,'ok',['⌥','⇧','M']); return; }
-      if (a && s && k === 'j') { e.preventDefault(); toggleComments(); T(cpanel.classList.contains('open')?'Comment panel opened':'Comment panel closed','info',['⌥','⇧','J']); return; }
-      if (a && s && k === 'p') { e.preventDefault(); T('Publishing survey…','info',['⌥','⇧','P']); return; }
-      if (a && s && k === 'n') { e.preventDefault(); T('Creating new blank survey…','info',['⌥','⇧','N']); return; }
-      if (a && s && k === 'd') { e.preventDefault(); T('Duplicating survey…','info',['⌥','⇧','D']); return; }
-      if (a && s && k === 'y') { e.preventDefault(); T('Logic copied from Q'+sq,'ok',['⌥','⇧','Y']); return; }
-      if (a && s && k === 'u') { e.preventDefault(); T('Logic pasted to Q'+sq,'ok',['⌥','⇧','U']); return; }
+      if (altOnly('KeyE')) { e.preventDefault(); T('Q'+sq+' expanded','info',['⌥','E']); return; }
+      if (altOnly('KeyC')) { e.preventDefault(); T('Q'+sq+' collapsed','info',['⌥','C']); return; }
+      if (altShift('KeyE')) { e.preventDefault(); T('All questions expanded','info',['⌥','⇧','E']); return; }
+      if (altShift('KeyC')) { e.preventDefault(); T('All questions collapsed','info',['⌥','⇧','C']); return; }
+      if (altOnly('KeyL')) { e.preventDefault(); T('Switched to Logic view','info',['⌥','L']); return; }
+      if (altShift('KeyL')) { e.preventDefault(); T('Toggled Question ↔ Logic mode','info',['⌥','⇧','L']); return; }
+      if (c && s && code === 'KeyH') { e.preventDefault(); T('Search & Replace opened','info',['⌘','⇧','H']); return; }
+      if (altOnly('KeyG')) { e.preventDefault(); T('Jump to question…','info',['⌥','G']); return; }
+      if (altShift('KeyM')) { e.preventDefault(); T('Comment added to Q'+sq,'ok',['⌥','⇧','M']); return; }
+      if (altShift('KeyJ')) { e.preventDefault(); toggleComments(); T(cpanel.classList.contains('open')?'Comment panel opened':'Comment panel closed','info',['⌥','⇧','J']); return; }
+      if (altShift('KeyP')) { e.preventDefault(); T('Publishing survey…','info',['⌥','⇧','P']); return; }
+      if (altShift('KeyN')) { e.preventDefault(); T('Creating new blank survey…','info',['⌥','⇧','N']); return; }
+      if (altShift('KeyD')) { e.preventDefault(); T('Duplicating survey…','info',['⌥','⇧','D']); return; }
+      if (altShift('KeyY')) { e.preventDefault(); T('Logic copied from Q'+sq,'ok',['⌥','⇧','Y']); return; }
+      if (altShift('KeyU')) { e.preventDefault(); T('Logic pasted to Q'+sq,'ok',['⌥','⇧','U']); return; }
       if (c && !s && k === 'k') { e.preventDefault(); T('Insert hyperlink','info',['⌘','K']); return; }
       if (c && !s && k === 'b') { e.preventDefault(); T('Bold toggled','info',['⌘','B']); return; }
-      if (c && !s && k === 'i') { e.preventDefault(); T('Italic toggled','info',['⌘','I']); return; }
       if (c && !s && k === 'u') { e.preventDefault(); T('Underline toggled','info',['⌘','U']); return; }
       if (k === 'f2') { e.preventDefault(); T('Rename mode activated','info',['F2']); return; }
       if (k === 'backspace' && !c && !a && !s) { e.preventDefault(); T('Q'+sq+' deleted','warn',['⌫']); return; }
@@ -695,7 +752,18 @@
     document.getElementById('btn-preview').addEventListener('click', () => T('Opening preview…','info',['⌥','⇧','V']));
     document.getElementById('btn-pub').addEventListener('click', () => T('Publishing survey…','info',['⌥','⇧','P']));
     document.getElementById('btn-logic').addEventListener('click', () => T('Switched to Logic view','info',['⌥','L']));
-    document.getElementById('btn-shortcuts').addEventListener('click', om);
+
+    // ========== Help Menu ==========
+    const helpMenu = document.getElementById('help-menu');
+    document.getElementById('help-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      helpMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', () => helpMenu.classList.remove('open'));
+    helpMenu.addEventListener('click', (e) => e.stopPropagation());
+    document.getElementById('hm-shortcuts').addEventListener('click', () => { helpMenu.classList.remove('open'); om(); });
+    document.getElementById('hm-tour').addEventListener('click', () => { helpMenu.classList.remove('open'); startTour(); });
+    document.getElementById('hm-help').addEventListener('click', () => { helpMenu.classList.remove('open'); T('Opening help center…','info'); });
 
     // ========== Onboarding Banner ==========
     const obBanner = document.getElementById('ob-banner');
@@ -735,9 +803,9 @@
         offsetY: 8
       },
       {
-        target: '#btn-shortcuts',
-        title: 'View all shortcuts',
-        desc: 'Press <kbd>⌘</kbd><kbd>/</kbd> anytime to see every available shortcut. You can also click this button.',
+        target: '#help-btn',
+        title: 'Need help anytime?',
+        desc: 'Click the <strong>?</strong> button to view all keyboard shortcuts, retake this tour, or visit the help center. You can also press <kbd>⌘</kbd><kbd>/</kbd> to jump straight to shortcuts.',
         arrow: 'arrow-right-top',
         offsetY: 8
       }
