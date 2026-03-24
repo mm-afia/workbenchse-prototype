@@ -8,11 +8,11 @@ Each prototype is self-contained — open the `index.html` in any browser to vie
 | Prototype | Description | Status |
 |-----------|-------------|--------|
 | [keyboard-shortcuts](./keyboard-shortcuts/) | Keyboard shortcuts with toast feedback, onboarding tour, and shortcuts modal | ✅ Ready for review |
-| [vh-prototype](./design-prototypes/vh-prototype.html) | Interactive VH survey-editor HTML prototype (self-contained). | ✅ Ready for review |
+| [vh-prototype](./design-prototypes/vh-prototype.html) | Version history prototype. | ✅ Ready for review |
 
 ## Design System
 
-All prototypes follow **MMDS (Macromill Design System)** tokens and the staff theme.
+These prototypes are currently at the ideation stage, prioritized for rapid validation and workflow discussion. As such, strict MMDS compliance has been deferred to the next iteration to allow for more flexible exploration of the core user experience.
 
 ## How to View
 
